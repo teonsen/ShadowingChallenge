@@ -1,11 +1,11 @@
 # ShadowingChallenge
-ShadowingChallenge is a web app to check one's pronunciation while shadowing or dictation with Web Speech API.  
-シャドーイングチャレンジは、英語学習に効果的とされる「シャドーイング」を頑張る人を応援するためのWebアプリです。
+ShadowingChallenge is an opensource web app to check one's pronunciation while shadowing or dictation with Web Speech API.  
+シャドーイングチャレンジは、英語学習に効果的とされる「シャドーイング」を頑張る人を応援するためのオープンソースWebアプリです。
 
-# Usage
+## Usage
 使い方は下記の通りです。Win/MacのChrome限定です。
 1. Live DemoのリンクからShadowingChallengeを開く
-2. 英語音声とそのスクリプトが公開されているサイトを探す（例：[レアジョブ](https://www.rarejob.com/)）
+2. 英語音声とそのスクリプトが公開されているサイトを探す（例：[レアジョブ](https://www.rarejob.com/), [BBC](https://www.bbc.co.uk/learningenglish/english/)）
 3. シャドーイングする音声のスクリプトをコピーする（答え合わせのために使用します）
 4. スクリプトをデモページの「Paste the original script here.」の部分に貼り付ける
 5. 「Start shadowing」ボタンを押す
@@ -15,18 +15,21 @@ ShadowingChallenge is a web app to check one's pronunciation while shadowing or 
 9. 終わったら「Compare」ボタンを押すか、約15秒無音で待機する
 10. 上記4.で貼り付けたテキストと、シャドーイングで認識された結果テキストを比較した差異を確認する
 
-（下の動画ではミキサーを使用していますが、通常のシャドーイングではミキサーを使う必要はありません）
-![How to start](https://user-images.githubusercontent.com/48349549/172044263-e7b38b07-335c-486f-8413-74400eb109fa.gif)
+![How to start](https://user-images.githubusercontent.com/48349549/172044263-e7b38b07-335c-486f-8413-74400eb109fa.gif)  
+<sub>
+上の動画ではミキサーを使用していますが、通常のシャドーイングではミキサーを使う必要はありません  
+動画内の使用教材：レアジョブさん公式「[WEEKLY NEW ARTICLE](https://www.rarejob.com/lesson/material/wna/)」 [May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)　　
+</sub>
 
-# Live Demo
+## Live Demo
 [https://teonsen.github.io/ShadowingChallenge/](https://teonsen.github.io/ShadowingChallenge/)
 
-# How accurate is it?
+## How accurate is it?
 `「私は発音には自信がある。認識精度が悪いんじゃないの？」`  
 という方向けに補足です。  
 音声認識には「Web Speech API」を使用していますが、英語の認識は良い感じです。(個人の感想です)  
 どれくらい「認識が良い」かは次の方法で確認しました。  
-- レアジョブさんの公開教材である「[WEEKLY NEW ARTICLE](https://www.rarejob.com/lesson/material/wna/)」を使用  
+- レアジョブさん公式教材「[WEEKLY NEW ARTICLE](https://www.rarejob.com/lesson/material/wna/)」[May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)を使用  
 - ミキサーを使用して音声出力をマイク入力にリダイレクト  
 
 この比較結果を確認すると、スクリプトにない冒頭と最後の部分が赤く(下図ではグレーに)なっていて、中身の違いはほぼ大文字小文字の違いとかアポストロフィーの違いであることがわかります。
