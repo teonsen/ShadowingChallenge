@@ -18,7 +18,7 @@ ShadowingChallenge is an opensource web app to check one's pronunciation while s
 ![How to start](https://user-images.githubusercontent.com/48349549/172044263-e7b38b07-335c-486f-8413-74400eb109fa.gif)  
 <sub>
 上の動画ではミキサーを使用していますが、通常のシャドーイングではミキサーを使う必要はありません  
-動画内の使用教材：[レアジョブ](https://www.rarejob.com/)さん公式「[WEEKLY NEW ARTICLE](https://www.rarejob.com/lesson/material/wna/)」 [May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)　　
+動画内の使用教材：[レアジョブ](https://www.rarejob.com/)さん公式「[WEEKLY NEWS ARTICLE](https://www.rarejob.com/lesson/material/wna/)」 [May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)　　
 </sub>
 
 ## Live Demo
@@ -29,7 +29,7 @@ ShadowingChallenge is an opensource web app to check one's pronunciation while s
 という方向けに補足です。  
 音声認識には「[Web Speech API](https://developer.mozilla.org/ja/docs/Web/API/Web_Speech_API)」を使用していますが、英語の認識は良い感じです。(個人の感想です)  
 どれくらい「認識が良い」かは次の方法で確認しました。  
-- [レアジョブ](https://www.rarejob.com/)さん公式教材「[WEEKLY NEW ARTICLE](https://www.rarejob.com/lesson/material/wna/)」[May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)を使用  
+- [レアジョブ](https://www.rarejob.com/)さん公式教材「[WEEKLY NEWS ARTICLE](https://www.rarejob.com/lesson/material/wna/)」[May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)を使用  
 - ミキサーを使用して音声出力をマイク入力にリダイレクト  
 
 この比較結果を確認すると、スクリプトにない冒頭と最後の部分が赤く(下図ではグレーに)なっていて、中身の違いはほぼ大文字小文字の違いとかアポストロフィーの違いであることがわかります。
