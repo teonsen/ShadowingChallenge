@@ -59,6 +59,13 @@ select {
   text-align: center;
   width: 100%;
 }
+.align-center img {
+  padding-top: 10px;
+}
+
+.align-center {
+  text-align: center;
+}
 
 @media screen and (max-width: 767px) {
     #select_dialect {
