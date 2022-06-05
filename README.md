@@ -34,6 +34,10 @@ ShadowingChallenge is a web app to check one's pronunciation while shadowing or 
 ![compare_result](https://user-images.githubusercontent.com/48349549/172044520-ebafb775-c02b-4a5c-9250-634e498a5e10.png)  
 この場合はAI音声をAIが再認識したものですが、ネイティブスピーカー音源の場合も同様の認識精度です。  
 Web Speech APIの認識精度に疑問を持った時に参考にしてください。  
+<sub>
+レアジョブさんを責めるわけではありませんが個人的にAI音声はシャドーイング向きではないと思います。  
+できるだけネイティブスピーカーの抑揚ある音源を使用してシャードーイングすることをオススメします。  
+</sub>
 
 # Acknowledgements
 This repo is just a combination of these great repos. Thanks a lot!
