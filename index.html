@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Shadowing challenge</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="shortcut icon" href="ico/favicon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style/decoration.css">
+    <link rel="stylesheet" href="style/web-speech.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  </head>
+  <body>
+      <main>
+          <div class="container mt-3">
+              <h3 class="text-center">Shadowing Challenge</h3>
+              <h6 class="text-left">遊び方</h6>
+              <ol>
+                <li>音源（シャドウイングする英語音声）の英文テキストをコピーし、下の枠にペーストする</li>
+                <li>[Start shadowing]ボタンまたはマイクアイコンを押す</li>
+                <li>マイクの使用を許可する</li>
+                <li>音源を再生し、シャドウイングを始める</li>
+                <li>[Compare]ボタンを押して差異を確認する</li>
+              </ol>
+              <div class="input-single">
+                  <textarea class="text-box" id="textarea1" placeholder="Paste the original script here.
+シャドウイングする音源の英文テキストをコピーし、この欄に貼り付けてください。" rows="6"></textarea>
+              </div>
+              <!--
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                <label class="form-check-label" for="flexSwitchCheckChecked">文字を表示</label>
+              </div>
+              -->
+              <div class="row col-12 p-0 m-0 mt-4 mb-2">
+                <div class="col-3 p-0 m-0">
+                  <div class="float-left">
+                    <button id="start_rec" class="btn btn-primary">Start shadowing</button>
+                  </div>
+                </div>
+                <div class="col-9 p-0 m-0">
+                    <select id="select_language"></select>
+                    <select id="select_dialect"></select>
+                </div>
+              </div>
+              <div id="info"></div>
+              <div class="float-right">
+                <button id="start_button">
+                  <img id="start_img" src="images/mic.gif" alt="Start"></button>
+              </div>
+              <div id="results">
+                <span id="final_span" class="final"></span>
+                <span id="interim_span" class="interim"></span>
+                <p>
+              </div>
+              <div class="row col-12 p-0 m-0">
+                <div class="col-12 col-md-4 col-lg-6 mt-3 mb-1 mt-md-0 p-0 m-0">
+                  <div class="float-left">
+                    <button id="compute_diff" class="btn btn-primary">Compare</button>
+                  </div>
+                </div>
+              </div>
+              <div id="outputdiv"></div>
+              <div id="compareresults">
+                <span id="output_span" class="final"></span>
+                <p>
+              </div>
+          </div>
+      </main>
+      <div id="footer">
+        <div class="clearfix1">
+            <div class="container">
+                <div class="row">
+                    <div class="center">
+                        <p>Web Speech API Shadowing Challenge 2022</p>
+                    </div>
+
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+      </div>
+      <script src="js/languages.js"></script>
+      <script src="js/web-speech-api.js"></script>
+    </body>
+</html>
+

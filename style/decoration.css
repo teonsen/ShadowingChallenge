@@ -1,0 +1,37 @@
+ol {
+    counter-reset:number; /*数字をリセット*/
+    list-style-type: none!important; /*数字を一旦消す*/
+    padding:0.5em;
+    background: #f5faff;
+  }
+  ol li {
+    position: relative;
+    padding-left: 30px;
+    line-height: 1.5em;
+    padding: 0.5em 0.5em 0.5em 30px;
+  }
+  
+  ol li:before{
+    /* 以下数字をつける */
+    position: absolute;
+    counter-increment: number;
+    content: counter(number);
+    /*以下数字のデザイン変える*/
+    display:inline-block;
+    background: #5c9ee7;
+    color: white;
+    font-family: 'Avenir','Arial Black','Arial',sans-serif;
+    font-weight:bold;
+    font-size: 15px;
+    border-radius: 50%;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    /*以下 上下中央寄せのため*/
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+  
