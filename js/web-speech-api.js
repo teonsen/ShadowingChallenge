@@ -44,7 +44,8 @@ $( document ).ready(function() {
   select_language.selectedIndex = 6;
   updateCountry();
   select_dialect.selectedIndex = 6;
-  
+  words1.innerHTML = getWordsStr('');
+  words2.innerHTML = getWordsStr('');
   if (!('webkitSpeechRecognition' in window)) {
     upgrade();
   } else {
@@ -102,9 +103,17 @@ $( document ).ready(function() {
       final_transcript = capitalize(final_transcript);
       final_span.innerHTML = linebreak(final_transcript);
       interim_span.innerHTML = linebreak(interim_transcript);
+      words2.innerHTML = getWordsStr(final_transcript + interim_transcript);
     };
   }
 });
+
+function getWordsStr(text) {
+  let n = countWords(text);
+  if (n == 0) return '0 words';
+  if (n == 1) return '1 word';
+  return n + " words";
+}
 
 function recognitionStopped() {
   recognizing = false;
@@ -140,7 +149,6 @@ function updateCountry() {
   }
   select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
 }
-
 
 function upgrade() {
   start_button.style.visibility = 'hidden';
@@ -183,6 +191,14 @@ function copyToClipboard() {
   showInfo('copy');
 }
 
+function countWords(s){
+  s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
+  s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
+  s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
+  return s.split(' ').filter(function(str){return str!="";}).length;
+  //return s.split(' ').filter(String).length; - this can also be used
+}
+
 $("#start_rec").click(function () {
   startRecognition();
 });
@@ -202,6 +218,8 @@ function startRecognition() {
   ignore_onend = false;
   final_span.innerHTML = '';
   interim_span.innerHTML = '';
+  words1.innerHTML = getWordsStr(textarea1.value);
+  words2.innerHTML = getWordsStr('');
   outputdiv.innerHTML = '';
   output_span.innerHTML = '';
   start_img.src = 'images/mic-slash.gif';
