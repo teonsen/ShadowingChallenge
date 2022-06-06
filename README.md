@@ -32,9 +32,9 @@ ShadowingChallenge is an opensource web app to check one's pronunciation while s
 - [レアジョブ](https://www.rarejob.com/)さん公式教材「[WEEKLY NEWS ARTICLE](https://www.rarejob.com/lesson/material/wna/)」[May 31,2022](https://www.rarejob.com/lesson/material/wna/2022/05/31/us-retailers-worried-that-summer-travel-may-lead-to-less-shopping/)を使用  
 - ミキサーを使用して音声出力をマイク入力にリダイレクト  
 
-この比較結果を確認すると、スクリプトにない冒頭と最後の部分が赤く(下図ではグレーに)なっていて、中身の違いはほぼ大文字小文字の違いとかアポストロフィーの違いであることがわかります。
+この比較結果を確認すると、スクリプトにない冒頭と最後の部分が赤くなっていて、中身の違いはほとんどないことがわかります。  
+![スクリーンショット 2022-06-06 20 16 46](https://user-images.githubusercontent.com/48349549/172150834-9509ad72-8f49-4620-907e-7d792ecfde76.png)
 
-![compare_result](https://user-images.githubusercontent.com/48349549/172044520-ebafb775-c02b-4a5c-9250-634e498a5e10.png)  
 この場合はAI音声をAIが再認識したものですが、ネイティブスピーカー音源の場合も同様の認識精度です。  
 Web Speech APIの認識精度に疑問を持った時に参考にしてください。  
 
