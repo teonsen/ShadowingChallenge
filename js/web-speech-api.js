@@ -197,8 +197,6 @@ function startRecognition() {
     return;
   }
   final_transcript = '';
-  //document.getElementById('outputdiv').innerHTML = '';
-  //document.getElementById('output_span').innerHTML = '';
   recognition.lang = select_dialect.value;
   recognition.start();
   ignore_onend = false;
@@ -312,21 +310,29 @@ function getSpokenText() {
   return '';
 }
 
+function getComparableText(txt) {
+  var ret = txt.replaceAll("’", "'");
+  ret = ret.replaceAll(",", "");
+  ret = ret.replaceAll(".", "");
+  ret = ret.toLowerCase();
+  return ret;
+}
+
 function showDiff() {
   var dmp = new diff_match_patch();      
 
   var text1 = document.getElementById('textarea1').value;
   var text2 = getSpokenText();
-  console.log(text1);
-  console.log(text2);
   if (!text1) {
-    document.getElementById('output_span').innerHTML = '<br>比較対象文字列が入力されていません。';
+    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。';
     return;
   }
   if (!text2) {
-    document.getElementById('output_span').innerHTML = '<br>音声認識された文字列がありません。';
+    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。';
     return;
   }
+  text1 = getComparableText(text1);
+  text2 = getComparableText(text2);
   
   dmp.Diff_Timeout = 1;
 
@@ -337,7 +343,7 @@ function showDiff() {
 
   dmp.diff_cleanupSemantic(d);
   var ds = dmp.diff_prettyHtml(d);
-  var msg = '<br>正解テキストと読み上げテキストの差異<br>';
+  
   //var outmsg = ds + '<BR>Time: ' + (ms_end - ms_start) / 1000 + 's';
   //var outmsg = msg + ds;
   document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異<br>';
