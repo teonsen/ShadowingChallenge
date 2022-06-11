@@ -11,8 +11,8 @@ ShadowingChallenge is an opensource web app to check one's pronunciation while s
 5. 「Start shadowing」ボタンを押す
 6. マイクの使用許可を求められるので、「許可」をクリックする
 7. 上記2.で開いたサイトで音源を再生する
-8. シャドーイングを始める（上記6.を行なった時点から15秒以内に発話を開始してください）
-9. 終わったら「Compare」ボタンを押すか、約15秒無音で待機する
+8. シャドーイングを始める
+9. 終わったら「Compare」ボタンを押す
 10. 上記4.で貼り付けたテキストと、シャドーイングで認識された結果テキストを比較した差異を確認する
 
 ![How to start](https://user-images.githubusercontent.com/48349549/172044263-e7b38b07-335c-486f-8413-74400eb109fa.gif)  
