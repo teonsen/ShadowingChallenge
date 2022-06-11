@@ -296,6 +296,7 @@ function startRecognition() {
   start_img.src = 'images/mic-slash.gif';
   vr_function();
   showInfo('allow');
+  isfisttime = true;
   start_timestamp = (new Date()).getTime();
 }
 
