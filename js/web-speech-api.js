@@ -104,6 +104,8 @@ function vr_function() {
       start_img.src = 'images/mic.gif';
       showInfo('no_speech');
       ignore_onend = true;
+      if (flag_speech == 0)
+        vr_function();
     }
     if (event.error == 'audio-capture') {
       start_img.src = 'images/mic.gif';
@@ -118,8 +120,8 @@ function vr_function() {
       }
       ignore_onend = true;
     }
-    if (flag_speech == 0)
-      vr_function();
+    //if (flag_speech == 0)
+    //  vr_function();
   };
 
   recognition.onsoundend = function() {
@@ -134,14 +136,15 @@ function vr_function() {
     var temp_transcript = '';
     for (var i = event.resultIndex; i < results.length; i++) {
       if (results[i].isFinal) {
-        final_transcript += results[i][0].transcript;
+        final_transcript += results[i][0].transcript + '.<br><br>';
         working_transcript = final_transcript;
         need_reset = true;
         flag_speech = 0;
       } else {
         if (isfisttime) {
-          dt_start = (new Date()).getTime();
-          startedtime.innerHTML = 'started : ' + getTimestampStr();
+          //dt_start = (new Date()).getTime();
+          dt_start = new window.Date();
+          startedtime.innerHTML = 'started : ' + getTimestampStr(new window.Date());   
           isfisttime = false;
         }
         temp_transcript += results[i][0].transcript;
@@ -154,6 +157,12 @@ function vr_function() {
     working_transcript = final_transcript + temp_transcript;
     words2.innerHTML = getWordsStr(working_transcript);
 
+    // calc wpm
+    let time_elapsed, wpm;
+    [time_elapsed, wpm] = getTimeElapsed_WPM();
+    startedtime.innerHTML = 'started : ' + getTimestampStr(dt_start) + ' +' + time_elapsed; 
+    elapsed_wpm.innerHTML = wpm;
+
     if (need_reset) { vr_function(); }
   }
 
@@ -163,6 +172,17 @@ function vr_function() {
   recognition.start();
 }
 
+function getTimeElapsed_WPM() {
+  //let dt_now = (new Date()).getTime();
+  let dt_now = new window.Date();
+  let spoken_sec = Math.trunc((dt_now.valueOf() - dt_start.valueOf()) / 1000);
+  let m = Math.trunc(spoken_sec / 60);
+  let a = ('00' + spoken_sec % 60).slice(-2);
+  let time_elapsed = m + ':' + a;
+  // WPM = 単語数 / 秒数 × 60秒
+  let wpm = 'wpm=' + Math.trunc(countWords(working_transcript) / spoken_sec * 60);
+  return [time_elapsed, wpm];
+}
 
 function getWordsStr(text) {
   let n = countWords(text);
@@ -240,16 +260,17 @@ $("#mic_icon").click(function () {
   }
 });
 
-function getTimestampStr() {
+function getTimestampStr(dt) {
   // タイムスタンプ機能
-  let now = new window.Date();
-  let Year = now.getFullYear();
-  let Month = (("0" + (now.getMonth() + 1)).slice(-2));
-  let Date = ("0" + now.getDate()).slice(-2);
-  let Hour = ("0" + now.getHours()).slice(-2);
-  let Min = ("0" + now.getMinutes()).slice(-2);
-  let Sec = ("0" + now.getSeconds()).slice(-2);
-  let timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
+  //let now = new window.Date();
+  //let Year = now.getFullYear();
+  //let Month = (("0" + (now.getMonth() + 1)).slice(-2));
+  //let Date = ("0" + now.getDate()).slice(-2);
+  let Hour = ("0" + dt.getHours()).slice(-2);
+  let Min = ("0" + dt.getMinutes()).slice(-2);
+  let Sec = ("0" + dt.getSeconds()).slice(-2);
+  //let timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
+  let timestamp = Hour + ':' + Min + ':' + Sec;
   return timestamp;
 }
 
@@ -374,7 +395,7 @@ function stopRecognition() {
     return;
   }
   showInfo('stop');
-  finishedtime.innerHTML = 'stopped : ' + getTimestampStr();
+  finishedtime.innerHTML = 'stopped : ' + getTimestampStr(new window.Date());
   /*
   if (window.getSelection) {
     window.getSelection().removeAllRanges();
@@ -391,11 +412,11 @@ function stopRecognition() {
 function showDiff() {
   let text1 = textInput.value;
   if (!text1) {
-    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。';
+    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。There is no text to compare with.';
     return;
   }
   if (!working_transcript) {
-    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。';
+    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。No text is recognized.';
     return;
   }
   text1 = getComparableText(text1);
@@ -409,13 +430,10 @@ function showDiff() {
   var d = dmp.diff_main(text2, text1);
   dmp.diff_cleanupSemantic(d);
   var ds = dmp.diff_prettyHtml(d);
-  
-  var dt_end = (new Date()).getTime();
-  let spoken_sec = (dt_end - dt_start) / 1000;
-  let working_words = countWords(working_transcript);
-  // WPM = 単語数 / 秒数 × 60秒
-  let wpm = Math.trunc(working_words / spoken_sec * 60);
-  document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異 (Time:' + spoken_sec + 's, WPM=' + wpm + ')<br>';
+
+  let time_elapsed, wpm;
+  [time_elapsed, wpm] = getTimeElapsed_WPM();
+  document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異 (Time elapsed=' + time_elapsed + ', Average ' + wpm + ')<br>';
   document.getElementById('output_span').innerHTML = ds;
 }
 
