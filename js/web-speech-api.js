@@ -5,7 +5,10 @@ var messages = {
   "speak_now": {
     msg: 'Speak now.',
     class: 'alert-success'},
-  "no_speech": {
+  "recognizing": {
+    msg: 'Recognizing...',
+    class: 'alert-success'},
+    "no_speech": {
     msg: 'No speech was detected. You may need to adjust your <a href="//support.google.com/chrome/answer/2693767" target="_blank">microphone settings</a>.',
     class: 'alert-danger'},
   "no_microphone": {
@@ -32,13 +35,14 @@ var messages = {
 }
 
 var final_transcript = '';
-var interim_transcript = '';
+var working_transcript = '';
 var recognizing = false;
 var ignore_onend;
 var start_timestamp;
 var recognition;
 var flag_speech = 0;
 var isfisttime = true;
+var dt_start;
 var textInput = document.getElementById('textarea1');
 textInput.oninput = inputChange;
 
@@ -83,11 +87,7 @@ function vr_function() {
 
   recognition.onsoundstart = function() {
     // 認識中
-    showInfo('speak_now');
-    if (isfisttime) {
-      startedtime.innerHTML = 'started : ' + getTimestampStr();
-      isfisttime = false;
-    }
+    showInfo('recognizing');
   };
 
   recognition.onnomatch = function() {
@@ -127,21 +127,29 @@ function vr_function() {
   recognition.onresult = function(event) {
     var results = event.results;
     var need_reset = false;
+    var temp_transcript = '';
     for (var i = event.resultIndex; i < results.length; i++) {
       if (results[i].isFinal) {
-        interim_transcript = '';
+        //interim_transcript = '';
         final_transcript += results[i][0].transcript;
+        working_transcript = final_transcript;
         need_reset = true;
         flag_speech = 0;
       } else {
-        interim_transcript += results[i][0].transcript;
+        if (isfisttime) {
+          dt_start = (new Date()).getTime();
+          startedtime.innerHTML = 'started : ' + getTimestampStr();
+          isfisttime = false;
+        }
+        temp_transcript += results[i][0].transcript;
         flag_speech = 1;
       }
     }
     final_transcript = capitalize(final_transcript);
     final_span.innerHTML = linebreak(final_transcript);
-    interim_span.innerHTML = linebreak(interim_transcript);
-    words2.innerHTML = getWordsStr(final_transcript + interim_transcript);
+    interim_span.innerHTML = linebreak(temp_transcript);
+    working_transcript = final_transcript + temp_transcript;
+    words2.innerHTML = getWordsStr(working_transcript);
 
     if (need_reset) { vr_function(); }
   }
@@ -163,11 +171,12 @@ function getWordsStr(text) {
 function stopRecognition() {
   recognizing = false;
   isfisttime = true;
+  start_img.src = 'images/mic.gif';
   if (ignore_onend) {
     return;
   }
-  start_img.src = 'images/mic.gif';
-  if (!final_transcript) {
+  //if (!final_transcript) {
+  if (!working_transcript) {
     showInfo('start');
     finishedtime.innerHTML = '';
     return;
@@ -279,11 +288,13 @@ function getTimestampStr() {
 }
 
 function resetRecognizedData() {
-  interim_transcript = '';
   final_transcript = '';
+  working_transcript = '';
   ignore_onend = false;
   final_span.innerHTML = '';
   interim_span.innerHTML = '';
+  startedtime.innerHTML = '';
+  finishedtime.innerHTML = '';
   words2.innerHTML = getWordsStr('');
   outputdiv.innerHTML = '';
   output_span.innerHTML = '';
@@ -298,7 +309,7 @@ function startRecognition() {
   start_img.src = 'images/mic-slash.gif';
   vr_function();
   showInfo('allow');
-  //start_timestamp = event.timeStamp;
+  start_timestamp = (new Date()).getTime();
   
   //入力中のテキストボックスの選択解除
   var activeEl = document.activeElement;
@@ -385,7 +396,7 @@ diff_match_patch.patch_obj=function(){this.diffs=[];this.start2=this.start1=null
 diff_match_patch.patch_obj.prototype.toString=function(){for(var a=["@@ -"+(0===this.length1?this.start1+",0":1==this.length1?this.start1+1:this.start1+1+","+this.length1)+" +"+(0===this.length2?this.start2+",0":1==this.length2?this.start2+1:this.start2+1+","+this.length2)+" @@\n"],b,c=0;c<this.diffs.length;c++){switch(this.diffs[c][0]){case DIFF_INSERT:b="+";break;case DIFF_DELETE:b="-";break;case DIFF_EQUAL:b=" "}a[c+1]=b+encodeURI(this.diffs[c][1])+"\n"}return a.join("").replace(/%20/g," ")};
 this.diff_match_patch=diff_match_patch;this.DIFF_DELETE=DIFF_DELETE;this.DIFF_INSERT=DIFF_INSERT;this.DIFF_EQUAL=DIFF_EQUAL;
 
-
+/*
 function getSpokenText() {
   if (document.selection) { 
       var range = document.body.createTextRange();
@@ -401,6 +412,7 @@ function getSpokenText() {
   }
   return '';
 }
+*/
 
 function getComparableText(txt) {
   var ret = txt.replaceAll("’", "'");
@@ -411,34 +423,34 @@ function getComparableText(txt) {
 }
 
 function showDiff() {
-  var dmp = new diff_match_patch();      
-
-  var text1 = textInput.value;
-  var text2 = getSpokenText();
+  let text1 = textInput.value;
+  //var text2 = getSpokenText();
   if (!text1) {
     document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。';
     return;
   }
-  if (!text2) {
+  if (!working_transcript) {
     document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。';
     return;
   }
   text1 = getComparableText(text1);
-  text2 = getComparableText(text2);
+  let text2 = getComparableText(working_transcript);
   
+  var dmp = new diff_match_patch();      
   dmp.Diff_Timeout = 1;
 
-  var ms_start = (new Date()).getTime();
+  //var ms_start = (new Date()).getTime();
   //var d = dmp.diff_main(text1, text2);
   var d = dmp.diff_main(text2, text1);
-  var ms_end = (new Date()).getTime();
-
   dmp.diff_cleanupSemantic(d);
   var ds = dmp.diff_prettyHtml(d);
   
-  //var outmsg = ds + '<BR>Time: ' + (ms_end - ms_start) / 1000 + 's';
-  //var outmsg = msg + ds;
-  document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異<br>';
+  var dt_end = (new Date()).getTime();
+  let spoken_sec = (dt_end - dt_start) / 1000;
+  let working_words = countWords(working_transcript);
+  // WPM = 単語数 / 秒数 × 60秒
+  let wpm = Math.trunc(working_words / spoken_sec * 60);
+  document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異 (Time:' + spoken_sec + 's, WPM=' + wpm + ')<br>';
   document.getElementById('output_span').innerHTML = ds;
 }
 
