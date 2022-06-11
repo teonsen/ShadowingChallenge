@@ -54,8 +54,7 @@ $( document ).ready(function() {
     upgrade();
   } else {
     showInfo('start');  
-    start_button.style.display = 'inline-block';
-      //vr_function();
+    mic_icon.style.display = 'inline-block';
   }
 });
 
@@ -66,9 +65,6 @@ function inputChange(){
 // 音声認識
 // 参考: https://github.com/1heisuzuki/speech-to-text-webcam-overlay
 function vr_function() {
-  //window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
-  //showInfo('start');  
-  //start_button.style.display = 'inline-block';
   recognition = new webkitSpeechRecognition();
   recognition.lang = select_dialect.value;
 
@@ -223,7 +219,7 @@ function updateCountry() {
 }
 
 function upgrade() {
-  start_button.style.visibility = 'hidden';
+  mic_icon.style.visibility = 'hidden';
   showInfo('upgrade');
 }
 
@@ -273,15 +269,20 @@ function countWords(s){
 
 $("#start_rec").click(function () {
   if (recognizing) {
-    stopRecognition();
+    resetRecognizedData();
   }
   else {
     startRecognition();
   }
 });
 
-$("#start_button").click(function () {
-  startRecognition();
+$("#mic_icon").click(function () {
+  if (recognizing) {
+    stopRecognition();
+  }
+  else {
+    startRecognition();
+  }
 });
 
 function getTimestampStr() {
@@ -297,14 +298,8 @@ function getTimestampStr() {
   return timestamp;
 }
 
-function startRecognition() {
-  if (recognizing) {
-    recognition.stop();
-    return;
-  }
+function resetRecognizedData() {
   final_transcript = '';
-  vr_function();
-  //recognition.lang = select_dialect.value;
   ignore_onend = false;
   final_span.innerHTML = '';
   interim_span.innerHTML = '';
@@ -312,6 +307,15 @@ function startRecognition() {
   outputdiv.innerHTML = '';
   output_span.innerHTML = '';
   start_img.src = 'images/mic-slash.gif';
+}
+
+function startRecognition() {
+  if (recognizing) {
+    recognition.stop();
+    return;
+  }
+  resetRecognizedData();
+  vr_function();
   showInfo('allow');
   //start_timestamp = event.timeStamp;
   
