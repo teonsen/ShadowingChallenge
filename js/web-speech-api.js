@@ -32,6 +32,7 @@ var messages = {
 }
 
 var final_transcript = '';
+var interim_transcript = '';
 var recognizing = false;
 var ignore_onend;
 var start_timestamp;
@@ -84,7 +85,7 @@ function vr_function() {
     // 認識中
     showInfo('speak_now');
     if (isfisttime) {
-      startedtime.innerHTML = 'started time : ' + getTimestampStr();
+      startedtime.innerHTML = 'started : ' + getTimestampStr();
       isfisttime = false;
     }
   };
@@ -128,30 +129,8 @@ function vr_function() {
     var need_reset = false;
     for (var i = event.resultIndex; i < results.length; i++) {
       if (results[i].isFinal) {
+        interim_transcript = '';
         final_transcript += results[i][0].transcript;
-        /*
-        last_finished = results[i][0].transcript;
-        if (lang == 'ja-JP') {
-          last_finished += '。';
-        }
-        */
-/*
-        var result_log = last_finished
-
-        if (document.getElementById('checkbox_timestamp').checked) {
-          // タイムスタンプ機能
-          var now = new window.Date();
-          var Year = now.getFullYear();
-          var Month = (("0" + (now.getMonth() + 1)).slice(-2));
-          var Date = ("0" + now.getDate()).slice(-2);
-          var Hour = ("0" + now.getHours()).slice(-2);
-          var Min = ("0" + now.getMinutes()).slice(-2);
-          var Sec = ("0" + now.getSeconds()).slice(-2);
-
-          var timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
-          result_log = timestamp + result_log
-        }
-*/
         need_reset = true;
         flag_speech = 0;
       } else {
@@ -299,6 +278,7 @@ function getTimestampStr() {
 }
 
 function resetRecognizedData() {
+  interim_transcript = '';
   final_transcript = '';
   ignore_onend = false;
   final_span.innerHTML = '';
