@@ -185,7 +185,7 @@ function getWordsStr(text) {
   return n + " words";
 }
 
-function recognitionStopped() {
+function stopRecognition() {
   recognizing = false;
   isfisttime = true;
   if (ignore_onend) {
@@ -194,6 +194,7 @@ function recognitionStopped() {
   start_img.src = 'images/mic.gif';
   if (!final_transcript) {
     showInfo('start');
+    finishedtime.innerHTML = '';
     return;
   }
   showInfo('stop');
@@ -271,7 +272,12 @@ function countWords(s){
 }
 
 $("#start_rec").click(function () {
-  startRecognition();
+  if (recognizing) {
+    stopRecognition();
+  }
+  else {
+    startRecognition();
+  }
 });
 
 $("#start_button").click(function () {
@@ -455,7 +461,7 @@ $("#compute_diff").click(function () {
   if (recognizing) {
     recognizing = false;
     recognition.stop();
-    recognitionStopped();
+    stopRecognition();
   }
   showDiff();
 });
