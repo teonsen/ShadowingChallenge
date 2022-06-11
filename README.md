@@ -42,5 +42,7 @@ Web Speech APIの認識精度に疑問を持った時に参考にしてくださ
 This repo is just a combination of these great repos. Thanks a lot!
 - [https://github.com/mdn/web-speech-api](https://github.com/mdn/web-speech-api)
 - [https://github.com/bensonruan/Chrome-Web-Speech-API](https://github.com/bensonruan/Chrome-Web-Speech-API)
+- [https://github.com/1heisuzuki/speech-to-text-webcam-overlay](https://github.com/1heisuzuki/speech-to-text-webcam-overlay)
 - [https://github.com/google/diff-match-patch](https://github.com/google/diff-match-patch)
+- [https://github.com/kpdecker/jsdiff](https://github.com/kpdecker/jsdiff)
 - [https://github.com/DKMitt/speech-to-text-js](https://github.com/DKMitt/speech-to-text-js)
