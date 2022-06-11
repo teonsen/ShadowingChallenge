@@ -67,6 +67,11 @@ select {
   text-align: center;
 }
 
+.time-stamp {
+  text-align: right;
+  color: gray;
+}
+
 .countedwords {
   text-align: right;
   color: gray;

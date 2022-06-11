@@ -36,6 +36,10 @@ var recognizing = false;
 var ignore_onend;
 var start_timestamp;
 var recognition;
+var flag_speech = 0;
+var isfisttime = true;
+var textInput = document.getElementById('textarea1');
+textInput.oninput = inputChange;
 
 $( document ).ready(function() {
   for (var i = 0; i < langs.length; i++) {
@@ -51,62 +55,128 @@ $( document ).ready(function() {
   } else {
     showInfo('start');  
     start_button.style.display = 'inline-block';
-    recognition = new webkitSpeechRecognition();
-
-    // If false, the recording will stop after a few seconds of silence.
-    // When true, the silence period is longer (about 15 seconds),
-    // allowing us to keep recording even when the user pauses. 
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    recognition.onstart = function() {
-      recognizing = true;
-      showInfo('speak_now');
-      start_img.src = 'images/mic-animation.gif';
-    };
-
-    recognition.onerror = function(event) {
-      if (event.error == 'no-speech') {
-        start_img.src = 'images/mic.gif';
-        showInfo('no_speech');
-        ignore_onend = true;
-      }
-      if (event.error == 'audio-capture') {
-        start_img.src = 'images/mic.gif';
-        showInfo('no_microphone');
-        ignore_onend = true;
-      }
-      if (event.error == 'not-allowed') {
-        if (event.timeStamp - start_timestamp < 100) {
-          showInfo('blocked');
-        } else {
-          showInfo('denied');
-        }
-        ignore_onend = true;
-      }
-    };
-
-    recognition.onend = function() {
-      recognitionStopped();
-    };
-
-    // This block is called every time the Speech APi captures a line. 
-    recognition.onresult = function(event) {
-      var interim_transcript = '';
-      for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final_transcript += event.results[i][0].transcript;
-        } else {
-          interim_transcript += event.results[i][0].transcript;
-        }
-      }
-      final_transcript = capitalize(final_transcript);
-      final_span.innerHTML = linebreak(final_transcript);
-      interim_span.innerHTML = linebreak(interim_transcript);
-      words2.innerHTML = getWordsStr(final_transcript + interim_transcript);
-    };
+      //vr_function();
   }
 });
+
+function inputChange(){
+  words1.innerHTML = getWordsStr(textInput.value);
+}
+
+// 音声認識
+// 参考: https://github.com/1heisuzuki/speech-to-text-webcam-overlay
+function vr_function() {
+  //window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+  //showInfo('start');  
+  //start_button.style.display = 'inline-block';
+  recognition = new webkitSpeechRecognition();
+  recognition.lang = select_dialect.value;
+
+  // If false, the recording will stop after a few seconds of silence.
+  // When true, the silence period is longer (about 15 seconds),
+  // allowing us to keep recording even when the user pauses. 
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    recognizing = true;
+    showInfo('speak_now');
+    start_img.src = 'images/mic-animation.gif';
+  };
+
+  recognition.onsoundstart = function() {
+    // 認識中
+    showInfo('speak_now');
+    if (isfisttime) {
+      startedtime.innerHTML = 'started time : ' + getTimestampStr();
+      isfisttime = false;
+    }
+  };
+
+  recognition.onnomatch = function() {
+    //document.getElementById('status').innerHTML = "音声を認識できませんでした";
+    //document.getElementById('status').className = "error";
+  };
+
+  recognition.onerror = function(event) {
+    if (event.error == 'no-speech') {
+      start_img.src = 'images/mic.gif';
+      showInfo('no_speech');
+      ignore_onend = true;
+    }
+    if (event.error == 'audio-capture') {
+      start_img.src = 'images/mic.gif';
+      showInfo('no_microphone');
+      ignore_onend = true;
+    }
+    if (event.error == 'not-allowed') {
+      if (event.timeStamp - start_timestamp < 100) {
+        showInfo('blocked');
+      } else {
+        showInfo('denied');
+      }
+      ignore_onend = true;
+    }
+    if (flag_speech == 0)
+      vr_function();
+  };
+
+  recognition.onsoundend = function() {
+    // 停止中
+    showInfo('stop');
+    vr_function();
+  };
+
+  recognition.onresult = function(event) {
+    var results = event.results;
+    var need_reset = false;
+    for (var i = event.resultIndex; i < results.length; i++) {
+      if (results[i].isFinal) {
+        final_transcript += results[i][0].transcript;
+        /*
+        last_finished = results[i][0].transcript;
+        if (lang == 'ja-JP') {
+          last_finished += '。';
+        }
+        */
+/*
+        var result_log = last_finished
+
+        if (document.getElementById('checkbox_timestamp').checked) {
+          // タイムスタンプ機能
+          var now = new window.Date();
+          var Year = now.getFullYear();
+          var Month = (("0" + (now.getMonth() + 1)).slice(-2));
+          var Date = ("0" + now.getDate()).slice(-2);
+          var Hour = ("0" + now.getHours()).slice(-2);
+          var Min = ("0" + now.getMinutes()).slice(-2);
+          var Sec = ("0" + now.getSeconds()).slice(-2);
+
+          var timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
+          result_log = timestamp + result_log
+        }
+*/
+        need_reset = true;
+        flag_speech = 0;
+      } else {
+        interim_transcript += results[i][0].transcript;
+        flag_speech = 1;
+      }
+    }
+    final_transcript = capitalize(final_transcript);
+    final_span.innerHTML = linebreak(final_transcript);
+    interim_span.innerHTML = linebreak(interim_transcript);
+    words2.innerHTML = getWordsStr(final_transcript + interim_transcript);
+
+    if (need_reset) { vr_function(); }
+  }
+
+  flag_speech = 0;
+  // 待機中
+  showInfo('speak_now');
+  recognition.start();
+}
+
 
 function getWordsStr(text) {
   let n = countWords(text);
@@ -117,6 +187,7 @@ function getWordsStr(text) {
 
 function recognitionStopped() {
   recognizing = false;
+  isfisttime = true;
   if (ignore_onend) {
     return;
   }
@@ -126,6 +197,7 @@ function recognitionStopped() {
     return;
   }
   showInfo('stop');
+  finishedtime.innerHTML = 'stopped : ' + getTimestampStr();
   if (window.getSelection) {
     window.getSelection().removeAllRanges();
     var range = document.createRange();
@@ -133,8 +205,7 @@ function recognitionStopped() {
     window.getSelection().addRange(range);
   }
 
-  var text1 = document.getElementById('textarea1').value;
-  if (text1) {
+  if (textInput.value) {
     showDiff();
   }
 }
@@ -207,25 +278,37 @@ $("#start_button").click(function () {
   startRecognition();
 });
 
+function getTimestampStr() {
+  // タイムスタンプ機能
+  let now = new window.Date();
+  let Year = now.getFullYear();
+  let Month = (("0" + (now.getMonth() + 1)).slice(-2));
+  let Date = ("0" + now.getDate()).slice(-2);
+  let Hour = ("0" + now.getHours()).slice(-2);
+  let Min = ("0" + now.getMinutes()).slice(-2);
+  let Sec = ("0" + now.getSeconds()).slice(-2);
+  let timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
+  return timestamp;
+}
+
 function startRecognition() {
   if (recognizing) {
     recognition.stop();
     return;
   }
   final_transcript = '';
-  recognition.lang = select_dialect.value;
-  recognition.start();
+  vr_function();
+  //recognition.lang = select_dialect.value;
   ignore_onend = false;
   final_span.innerHTML = '';
   interim_span.innerHTML = '';
-  words1.innerHTML = getWordsStr(textarea1.value);
   words2.innerHTML = getWordsStr('');
   outputdiv.innerHTML = '';
   output_span.innerHTML = '';
   start_img.src = 'images/mic-slash.gif';
   showInfo('allow');
-  start_timestamp = event.timeStamp;
-
+  //start_timestamp = event.timeStamp;
+  
   //入力中のテキストボックスの選択解除
   var activeEl = document.activeElement;
   if (activeEl) {
@@ -339,7 +422,7 @@ function getComparableText(txt) {
 function showDiff() {
   var dmp = new diff_match_patch();      
 
-  var text1 = document.getElementById('textarea1').value;
+  var text1 = textInput.value;
   var text2 = getSpokenText();
   if (!text1) {
     document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。';
