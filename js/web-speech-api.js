@@ -213,6 +213,7 @@ function capitalize(s) {
   return s.replace(first_char, function(m) { return m.toUpperCase(); });
 }
 
+/*
 $("#copy_button").click(function () {
   if (recognizing) {
     recognizing = false;
@@ -237,7 +238,7 @@ function copyToClipboard() {
   }
   showInfo('copy');
 }
-
+*/
 function countWords(s){
   s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
   s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
@@ -286,7 +287,6 @@ function resetRecognizedData() {
   words2.innerHTML = getWordsStr('');
   outputdiv.innerHTML = '';
   output_span.innerHTML = '';
-  start_img.src = 'images/mic-slash.gif';
 }
 
 function startRecognition() {
@@ -295,6 +295,7 @@ function startRecognition() {
     return;
   }
   resetRecognizedData();
+  start_img.src = 'images/mic-slash.gif';
   vr_function();
   showInfo('allow');
   //start_timestamp = event.timeStamp;
