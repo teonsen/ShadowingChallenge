@@ -1,14 +1,17 @@
 var messages = {
   "start": {
-    msg: 'Click on the microphone icon and begin speaking.',
+    msg: 'Click "Start shadowing" button or the microphone icon and begin speaking.',
     class: 'alert-success'},
   "speak_now": {
     msg: 'Speak now.',
     class: 'alert-success'},
-  "recognizing": {
+  "st_recognizing": {
     msg: 'Recognizing...',
     class: 'alert-success'},
-    "no_speech": {
+  "st_pausing": {
+    msg: 'Recognition is pausing...',
+    class: 'alert-warning'},
+  "no_speech": {
     msg: 'No speech was detected. You may need to adjust your <a href="//support.google.com/chrome/answer/2693767" target="_blank">microphone settings</a>.',
     class: 'alert-danger'},
   "no_microphone": {
@@ -34,6 +37,7 @@ var messages = {
     class: 'alert-success'},
 }
 
+var current_status = '';
 var final_transcript = '';
 var working_transcript = '';
 var recognizing = false;
@@ -87,7 +91,7 @@ function vr_function() {
 
   recognition.onsoundstart = function() {
     // 認識中
-    showInfo('recognizing');
+    showInfo('st_recognizing');
   };
 
   recognition.onnomatch = function() {
@@ -119,18 +123,17 @@ function vr_function() {
   };
 
   recognition.onsoundend = function() {
-    // 停止中
+    // 停止時
     showInfo('stop');
-    vr_function();
   };
 
   recognition.onresult = function(event) {
+    if (recognizing == false) return;
     var results = event.results;
     var need_reset = false;
     var temp_transcript = '';
     for (var i = event.resultIndex; i < results.length; i++) {
       if (results[i].isFinal) {
-        //interim_transcript = '';
         final_transcript += results[i][0].transcript;
         working_transcript = final_transcript;
         need_reset = true;
@@ -168,33 +171,6 @@ function getWordsStr(text) {
   return n + " words";
 }
 
-function stopRecognition() {
-  recognizing = false;
-  isfisttime = true;
-  start_img.src = 'images/mic.gif';
-  if (ignore_onend) {
-    return;
-  }
-  //if (!final_transcript) {
-  if (!working_transcript) {
-    showInfo('start');
-    finishedtime.innerHTML = '';
-    return;
-  }
-  showInfo('stop');
-  finishedtime.innerHTML = 'stopped : ' + getTimestampStr();
-  if (window.getSelection) {
-    window.getSelection().removeAllRanges();
-    var range = document.createRange();
-    range.selectNode(document.getElementById('final_span'));
-    window.getSelection().addRange(range);
-  }
-
-  if (textInput.value) {
-    showDiff();
-  }
-}
-
 function updateCountry() {
   for (var i = select_dialect.options.length - 1; i >= 0; i--) {
     select_dialect.remove(i);
@@ -222,32 +198,6 @@ function capitalize(s) {
   return s.replace(first_char, function(m) { return m.toUpperCase(); });
 }
 
-/*
-$("#copy_button").click(function () {
-  if (recognizing) {
-    recognizing = false;
-    recognition.stop();
-  }
-  setTimeout(copyToClipboard, 500);
-  
-});
-
-function copyToClipboard() {
-  if (document.selection) { 
-      var range = document.body.createTextRange();
-      range.moveToElementText(document.getElementById('results'));
-      range.select().createTextRange();
-      document.execCommand("copy"); 
-  
-  } else if (window.getSelection) {
-      var range = document.createRange();
-       range.selectNode(document.getElementById('results'));
-       window.getSelection().addRange(range);
-       document.execCommand("copy");
-  }
-  showInfo('copy');
-}
-*/
 function countWords(s){
   s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
   s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
@@ -267,10 +217,26 @@ $("#start_rec").click(function () {
 
 $("#mic_icon").click(function () {
   if (recognizing) {
-    stopRecognition();
+    //stopRecognition();
+    recognizing = false;
+    start_img.src = 'images/mic.gif';
+    showInfo('st_pausing');
   }
   else {
-    startRecognition();
+    if (working_transcript) {
+      if (current_status == 'st_pausing') {
+        recognizing = true;
+        start_img.src = 'images/mic-animation.gif';
+        showInfo('st_recognizing');
+      }
+      else
+      {
+        startRecognition();
+      }
+    }
+    else {
+      startRecognition();
+    }
   }
 });
 
@@ -310,17 +276,6 @@ function startRecognition() {
   vr_function();
   showInfo('allow');
   start_timestamp = (new Date()).getTime();
-  
-  //入力中のテキストボックスの選択解除
-  var activeEl = document.activeElement;
-  if (activeEl) {
-      var tagName = activeEl.nodeName.toLowerCase();
-      if ( tagName == "textarea" ||
-              (tagName == "input" && activeEl.type == "text") ) {
-          // Collapse the selection to the end
-          activeEl.selectionStart = activeEl.selectionEnd;
-      }
-  }
 }
 
 $("#select_language").change(function () {
@@ -328,6 +283,7 @@ $("#select_language").change(function () {
 });
 
 function showInfo(s) {
+  current_status = s;
   if (s) {
     var message = messages[s];
     $("#info").html(message.msg);
@@ -396,24 +352,6 @@ diff_match_patch.patch_obj=function(){this.diffs=[];this.start2=this.start1=null
 diff_match_patch.patch_obj.prototype.toString=function(){for(var a=["@@ -"+(0===this.length1?this.start1+",0":1==this.length1?this.start1+1:this.start1+1+","+this.length1)+" +"+(0===this.length2?this.start2+",0":1==this.length2?this.start2+1:this.start2+1+","+this.length2)+" @@\n"],b,c=0;c<this.diffs.length;c++){switch(this.diffs[c][0]){case DIFF_INSERT:b="+";break;case DIFF_DELETE:b="-";break;case DIFF_EQUAL:b=" "}a[c+1]=b+encodeURI(this.diffs[c][1])+"\n"}return a.join("").replace(/%20/g," ")};
 this.diff_match_patch=diff_match_patch;this.DIFF_DELETE=DIFF_DELETE;this.DIFF_INSERT=DIFF_INSERT;this.DIFF_EQUAL=DIFF_EQUAL;
 
-/*
-function getSpokenText() {
-  if (document.selection) { 
-      var range = document.body.createTextRange();
-      range.moveToElementText(document.getElementById('results'));
-      range.select().createTextRange();
-      document.selection.toString(); 
-  
-  } else if (window.getSelection) {
-      var range = document.createRange();
-      range.selectNode(document.getElementById('results'));
-      window.getSelection().addRange(range);
-      return window.getSelection().toString();
-  }
-  return '';
-}
-*/
-
 function getComparableText(txt) {
   var ret = txt.replaceAll("’", "'");
   ret = ret.replaceAll(",", "");
@@ -422,9 +360,36 @@ function getComparableText(txt) {
   return ret;
 }
 
+function stopRecognition() {
+  recognizing = false;
+  isfisttime = true;
+  start_img.src = 'images/mic.gif';
+  if (ignore_onend) {
+    return;
+  }
+  //if (!final_transcript) {
+  if (!working_transcript) {
+    showInfo('start');
+    finishedtime.innerHTML = '';
+    return;
+  }
+  showInfo('stop');
+  finishedtime.innerHTML = 'stopped : ' + getTimestampStr();
+  /*
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+    var range = document.createRange();
+    range.selectNode(document.getElementById('final_span'));
+    window.getSelection().addRange(range);
+  }
+  */
+  if (textInput.value) {
+    showDiff();
+  }
+}
+
 function showDiff() {
   let text1 = textInput.value;
-  //var text2 = getSpokenText();
   if (!text1) {
     document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。';
     return;
