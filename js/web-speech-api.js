@@ -155,13 +155,11 @@ function vr_function() {
   recognition.onresult = function(event) {
     if (recognizing == false) return;
     var results = event.results;
-    var need_reset = false;
     var temp_transcript = '';
     for (var i = event.resultIndex; i < results.length; i++) {
       if (results[i].isFinal) {
-        final_transcript += results[i][0].transcript + '.<br><br>';
+        final_transcript += capitalize(results[i][0].transcript) + '.<br><br>';
         working_transcript = final_transcript;
-        need_reset = true;
         flag_speech = 0;
       } else {
         if (isfisttime) {
@@ -170,6 +168,9 @@ function vr_function() {
           isfisttime = false;
         }
         temp_transcript += results[i][0].transcript;
+        if (i == event.resultIndex) {
+          temp_transcript = capitalize(temp_transcript);
+        }
         flag_speech = 1;
       }
     }
@@ -184,8 +185,6 @@ function vr_function() {
     [time_elapsed, wpm] = getTimeElapsed_WPM();
     startedtime.innerHTML = `started : ${getTimestampStr(dt_start)} +${time_elapsed}`; 
     elapsed_wpm.innerHTML = wpm;
-
-    if (need_reset) { vr_function(); }
   }
 
   flag_speech = 0;
@@ -379,7 +378,7 @@ function showDiff() {
     return;
   }
   text1 = getComparableText(text1);
-  let text2 = getComparableText(working_transcript.replace('<br><br>', ''));
+  let text2 = getComparableText(working_transcript.replaceAll('<br><br>', ''));
   
   var dmp = new diff_match_patch();
   dmp.Diff_Timeout = 1;
