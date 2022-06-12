@@ -143,8 +143,8 @@ function vr_function() {
       } else {
         if (isfisttime) {
           //dt_start = (new Date()).getTime();
-          dt_start = new window.Date();
-          startedtime.innerHTML = 'started : ' + getTimestampStr(new window.Date());   
+          dt_start = new Date();
+          startedtime.innerHTML = 'started : ' + getTimestampStr(new Date());   
           isfisttime = false;
         }
         temp_transcript += results[i][0].transcript;
@@ -160,7 +160,7 @@ function vr_function() {
     // calc wpm
     let time_elapsed, wpm;
     [time_elapsed, wpm] = getTimeElapsed_WPM();
-    startedtime.innerHTML = 'started : ' + getTimestampStr(dt_start) + ' +' + time_elapsed; 
+    startedtime.innerHTML = `started : ${getTimestampStr(dt_start)} +${time_elapsed}`; 
     elapsed_wpm.innerHTML = wpm;
 
     if (need_reset) { vr_function(); }
@@ -174,11 +174,11 @@ function vr_function() {
 
 function getTimeElapsed_WPM() {
   //let dt_now = (new Date()).getTime();
-  let dt_now = new window.Date();
+  let dt_now = new Date();
   let spoken_sec = Math.trunc((dt_now.valueOf() - dt_start.valueOf()) / 1000);
   let m = Math.trunc(spoken_sec / 60);
-  let a = ('00' + spoken_sec % 60).slice(-2);
-  let time_elapsed = m + ':' + a;
+  let ss = ('00' + spoken_sec % 60).slice(-2);
+  let time_elapsed = m + ':' + ss;
   // WPM = 単語数 / 秒数 × 60秒
   let wpm = 'wpm=' + Math.trunc(countWords(working_transcript) / spoken_sec * 60);
   return [time_elapsed, wpm];
@@ -270,7 +270,7 @@ function getTimestampStr(dt) {
   let Min = ("0" + dt.getMinutes()).slice(-2);
   let Sec = ("0" + dt.getSeconds()).slice(-2);
   //let timestamp = Year + '-' + Month + '-' + Date + ' ' + Hour + ':' + Min + ':' + Sec + '&#009;'
-  let timestamp = Hour + ':' + Min + ':' + Sec;
+  let timestamp = `${Hour}:${Min}:${Sec}`;
   return timestamp;
 }
 
@@ -396,15 +396,7 @@ function stopRecognition() {
     return;
   }
   showInfo('stop');
-  finishedtime.innerHTML = 'stopped : ' + getTimestampStr(new window.Date());
-  /*
-  if (window.getSelection) {
-    window.getSelection().removeAllRanges();
-    var range = document.createRange();
-    range.selectNode(document.getElementById('final_span'));
-    window.getSelection().addRange(range);
-  }
-  */
+  finishedtime.innerHTML = 'stopped : ' + getTimestampStr(new Date());
   if (textInput.value) {
     showDiff();
   }
@@ -413,11 +405,11 @@ function stopRecognition() {
 function showDiff() {
   let text1 = textInput.value;
   if (!text1) {
-    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。There is no text to compare with.';
+    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。<br>There is no text to compare with.';
     return;
   }
   if (!working_transcript) {
-    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。No text is recognized.';
+    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。<br>No text is recognized.';
     return;
   }
   text1 = getComparableText(text1);
@@ -426,15 +418,13 @@ function showDiff() {
   var dmp = new diff_match_patch();      
   dmp.Diff_Timeout = 1;
 
-  //var ms_start = (new Date()).getTime();
-  //var d = dmp.diff_main(text1, text2);
   var d = dmp.diff_main(text2, text1);
   dmp.diff_cleanupSemantic(d);
   var ds = dmp.diff_prettyHtml(d);
 
   let time_elapsed, wpm;
   [time_elapsed, wpm] = getTimeElapsed_WPM();
-  document.getElementById('outputdiv').innerHTML = '正解テキストと読み上げテキストの差異 (Time elapsed=' + time_elapsed + ', Average ' + wpm + ')<br>';
+  document.getElementById('outputdiv').innerHTML = `正解テキストと読み上げテキストの差異 (Time elapsed=${time_elapsed}, Average ${wpm})<br>`;
   document.getElementById('output_span').innerHTML = ds;
 }
 
