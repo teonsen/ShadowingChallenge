@@ -1254,6 +1254,9 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
   var pattern_lt = /</g;
   var pattern_gt = />/g;
   var pattern_para = /\n/g;
+  var ins = 0;
+  var del = 0;
+  var eql = 0;
   for (var x = 0; x < diffs.length; x++) {
     var op = diffs[x][0];    // Operation (insert, delete, equal)
     var data = diffs[x][1];  // Text of change.
@@ -1261,19 +1264,28 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
         .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
     switch (op) {
       case DIFF_INSERT:
-        html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
+        html[x] = '<ins style="background:#ccf7ff;">' + text + '</ins>'; // org color=#e6ffe6 ccf7ff
+        ins += countWords(text);
         break;
       case DIFF_DELETE:
-        html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
+        html[x] = '<del style="background:#ffb3bf;">' + text + '</del>'; // org color=#ffe6e6 ffb3bf
+        del += countWords(text);
         break;
       case DIFF_EQUAL:
         html[x] = '<span>' + text + '</span>';
+        eql += countWords(text);
         break;
     }
   }
-  return html.join('');
+  return [html.join(''), ins, del, eql];
 };
 
+function countWords(s){
+  s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
+  s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
+  s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
+  return s.split(' ').filter(function(str){return str!="";}).length;
+}
 
 /**
  * Compute and return the source text (all equalities and deletions).

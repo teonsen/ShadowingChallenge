@@ -71,6 +71,8 @@ var flag_speech = 0;
 var isfisttime = true;
 var dt_start;
 var textInput = document.getElementById('textarea1');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 textInput.oninput = inputChange;
 
 $( document ).ready(function() {
@@ -304,7 +306,9 @@ function resetRecognizedData() {
   startedtime.innerHTML = '';
   finishedtime.innerHTML = '';
   words2.innerHTML = getWordsStr('');
-  outputdiv.innerHTML = '';
+  outputdiv1.innerHTML = '';
+  outputdiv2.innerHTML = '';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   output_span.innerHTML = '';
 }
 
@@ -385,12 +389,41 @@ function showDiff() {
 
   var d = dmp.diff_main(text2, text1);
   dmp.diff_cleanupSemantic(d);
-  var ds = dmp.diff_prettyHtml(d);
+  let phtml, ins, del, eql;
+  //var ds = dmp.diff_prettyHtml(d);
+  [phtml, ins, del, eql] = dmp.diff_prettyHtml(d);
 
   let time_elapsed, wpm;
   [time_elapsed, wpm] = getTimeElapsed_WPM();
-  document.getElementById('outputdiv').innerHTML = `正解テキストと読み上げテキストの差異 (Time elapsed=${time_elapsed}, Average ${wpm})<br>`;
-  document.getElementById('output_span').innerHTML = ds;
+  
+  let sum = ins + del + eql;
+  let peql = Math.trunc(eql / sum * 100);
+  let pins = Math.trunc(ins / sum * 100);
+  let pdel = 100 - peql - pins;
+  let outstr1 = `Comparison results (time elapsed=${time_elapsed}, average ${wpm})<br>`;
+  document.getElementById('outputdiv1').innerHTML = outstr1;
+  document.getElementById('output_span').innerHTML = phtml;
+  let outstr2 = `pronounced correctly: ${eql} (${peql}%)<br>correct script: ${ins} (${pins}%)<br>mispronounced/unrecognized: ${del} (${pdel}%)<br>`;
+  document.getElementById('outputdiv2').innerHTML = outstr2;
+
+  // https://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js
+  var pieData = [
+    {
+      value: peql,
+      color: "limegreen",
+    },
+    {
+      value : pins,
+      color : "#ccf7ff"
+    },
+    {
+      value : pdel,
+      color : "#ffb3bf"
+    }
+  ];
+  // percentageInnerCutout : 80 => doughnut's width is nallow, 50 => thick.
+  //var myChart1 = document.getElementById("canvas").getContext("2d");
+  var myPie = new Chart(ctx).Doughnut(pieData, {percentageInnerCutout : 70});
 }
 
 $("#compute_diff").click(function () {

@@ -77,6 +77,17 @@ select {
   color: gray;
 }
 
+#outputdiv1 {
+  color: gray;
+}
+#outputdiv2 {
+  color: gray;
+}
+
+canvas {
+  margin-top:0; margin-bottom:0; margin-left:auto; margin-right:0;
+}
+
 @media screen and (max-width: 767px) {
     #select_dialect {
       position: absolute;
