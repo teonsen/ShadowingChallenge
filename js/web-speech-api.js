@@ -410,15 +410,15 @@ function showDiff() {
   var pieData = [
     {
       value: peql,
-      color: "limegreen",
+      color: "#1c4da3"
     },
     {
       value : pins,
-      color : "#ccf7ff"
+      color : "#addded"
     },
     {
       value : pdel,
-      color : "#ffb3bf"
+      color : "#e3768e"
     }
   ];
   // percentageInnerCutout : 80 => doughnut's width is nallow, 50 => thick.

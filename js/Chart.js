@@ -768,7 +768,7 @@ window.Chart = function(context){
             ctx.fillStyle = config.labelFontColor;
             ctx.textBaseline = 'middle';
             //ctx.fillText(data[0].value + "%", width/2 - 20, width/2, 200);
-            ctx.fillText(data[0].value + "%", width/2 - 30, width/2, 200);
+            ctx.fillText(data[0].value + "%", width/2 - 50, width/2, 200);
 
             var cumulativeAngle = -Math.PI/2,
                 scaleAnimation = 1,
