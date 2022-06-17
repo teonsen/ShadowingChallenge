@@ -395,18 +395,24 @@ function showDiff() {
 
   let time_elapsed, wpm;
   [time_elapsed, wpm] = getTimeElapsed_WPM();
-  
+  /*
   let sum = ins + del + eql;
   let peql = Math.trunc(eql / sum * 100);
   let pins = Math.trunc(ins / sum * 100);
   let pdel = 100 - peql - pins;
+  */
+  let sum = ins + eql;
+  let peql = Math.trunc(eql / sum * 100);
+  let pins = 100 - peql;
   let outstr1 = `Comparison results (time elapsed=${time_elapsed}, average ${wpm})<br>`;
   document.getElementById('outputdiv1').innerHTML = outstr1;
   document.getElementById('output_span').innerHTML = phtml;
-  let outstr2 = `pronounced correctly: ${eql} (${peql}%)<br>correct script: ${ins} (${pins}%)<br>mispronounced/unrecognized: ${del} (${pdel}%)<br>`;
+  //let outstr2 = `pronounced correctly: ${eql} (${peql}%)<br>correct script: ${ins} (${pins}%)<br>mispronounced/unrecognized: ${del} (${pdel}%)<br>`;
+  let outstr2 = `pronounced/recognized correctly: ${eql} (${peql}%)<br>unread/unrecognized: ${ins} (${pins}%)<br>`;
   document.getElementById('outputdiv2').innerHTML = outstr2;
 
   // https://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js
+  /*
   var pieData = [
     {
       value: peql,
@@ -421,8 +427,18 @@ function showDiff() {
       color : "#e3768e"
     }
   ];
+  */
+  var pieData = [
+    {
+      value: peql,
+      color: "#1c4da3"
+    },
+    {
+      value : pins,
+      color : "#addded"
+    }
+  ];
   // percentageInnerCutout : 80 => doughnut's width is nallow, 50 => thick.
-  //var myChart1 = document.getElementById("canvas").getContext("2d");
   var myPie = new Chart(ctx).Doughnut(pieData, {percentageInnerCutout : 70});
 }
 
