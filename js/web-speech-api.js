@@ -344,9 +344,17 @@ function showInfo(s) {
 }
 
 function getComparableText(txt) {
-  var ret = txt.replaceAll("’", "'");
+  var ret = txt.replaceAll("’", "");
+  ret = ret.replaceAll("'", "");
   ret = ret.replaceAll(",", "");
   ret = ret.replaceAll(".", "");
+  ret = ret.replaceAll("(", "");
+  ret = ret.replaceAll(")", "");
+  ret = ret.replaceAll("?", "");
+  ret = ret.replaceAll(":", "");
+  ret = ret.replaceAll("-", "");
+  ret = ret.replaceAll("/", "");
+  ret = ret.replaceAll("¶", "");
   ret = ret.toLowerCase();
   return ret;
 }
