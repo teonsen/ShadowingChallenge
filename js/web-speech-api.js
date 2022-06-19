@@ -346,6 +346,7 @@ function showInfo(s) {
 function getComparableText(txt) {
   var ret = txt.replaceAll("’", "");
   ret = ret.replaceAll("'", "");
+  ret = ret.replaceAll("\"", "");
   ret = ret.replaceAll(",", "");
   ret = ret.replaceAll(".", "");
   ret = ret.replaceAll("(", "");
@@ -354,7 +355,6 @@ function getComparableText(txt) {
   ret = ret.replaceAll(":", "");
   ret = ret.replaceAll("-", "");
   ret = ret.replaceAll("/", "");
-  ret = ret.replaceAll("¶", "");
   ret = ret.toLowerCase();
   return ret;
 }

@@ -1264,6 +1264,7 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
         .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
     switch (op) {
       case DIFF_INSERT:
+        if (text == '¶') continue;
         html[x] = '<ins style="background:#ccf7ff;">' + text + '</ins>'; // org color=#e6ffe6 ccf7ff
         ins += countWords(text);
         break;
