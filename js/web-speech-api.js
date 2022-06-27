@@ -74,6 +74,7 @@ var textInput = document.getElementById('textarea1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 textInput.oninput = inputChange;
+var keepRecognizing = true;
 
 $( document ).ready(function() {
   for (var i = 0; i < langs.length; i++) {
@@ -331,7 +332,6 @@ $("#select_language").change(function () {
   updateCountry();
 });
 
-var keepRecognizing = false;
 $("#checkKeepRecognition").change(function() {
   $('input:checked').each(function() {
     keepRecognizing = $(this).prop('checked');  
