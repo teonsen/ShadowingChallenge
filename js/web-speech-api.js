@@ -153,8 +153,12 @@ function vr_function() {
   };
 
   recognition.onsoundend = function() {
-    // 停止時
+    // 停止時 (2分くらい無音だと発生)
     showInfo('stop');
+    start_img.src = 'images/mic.gif';
+    if (flag_speech == 0 && keepRecognizing) {
+      vr_function();
+    }
   };
 
   recognition.onresult = function(event) {
