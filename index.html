@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style/decoration.css">
     <link rel="stylesheet" href="style/web-speech.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!--<script async src="//jsfiddle.net/mayankcpdixit/6xV78/embed/"></script>-->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   </head>
   <body>
       <main>
@@ -28,13 +28,44 @@
                 <li>Play the audio. You can now start the "Shadowing Challenge"!<br>音源を再生し、シャドーイングを始める</li>
                 <li>Press "Compare" to check how good your speech was recognized.<br>終わったら[Compare]ボタンを押して差異を確認する</li>
               </ol>
+              <!--
               <div class="input-single">
-                  <textarea class="text-box" id="textarea1" placeholder="Paste the original script here.
+                <textarea class="text-box" id="textarea1" placeholder="Paste the original script here.
 シャドーイングする音源の英文テキストをコピーし、この欄に貼り付けてください。" rows="6"></textarea>
               </div>
+              -->
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="nav-trans-tab" data-toggle="tab" href="#nav-trans" role="tab" aria-controls="nav-trans" aria-selected="true">Transcription</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="nav-result-tab" data-toggle="tab" href="#nav-result" role="tab" aria-controls="nav-result" aria-selected="false">Result</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-trans" role="tabpanel" aria-labelledby="nav-trans-tab">
+                  <div class="input-single">
+                    <textarea class="text-box" id="textarea1" placeholder="Paste the original script here.
+シャドーイングする音源の英文テキストをコピーし、この欄に貼り付けてください。" rows="6"></textarea>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="nav-result" role="tabpanel" aria-labelledby="nav-result-tab">
+                  <div id="compareresults">
+                    <span id="span_result_tab" class="final"></span>
+                    <p>
+                  </div>
+                </div>
+              </div>
+              <!--
+              <script>
+                $(function () {
+                  $('#myTab li:last-child a').tab('show')
+                })
+              </script>
+              -->
               <div class="row col-12 p-0 m-0">
                 <div class="col-12 p-0 m-0">
-                  <div id="words1" class="countedwords"></div>
+                  <div id="countedwords1" class="countedwords"></div>
                 </div>
               </div>
               <!--
@@ -49,10 +80,16 @@
                     <button id="start_rec" class="btn btn-primary">Start shadowing</button>
                   </div>
                 </div>
-                <div class="col-9 p-0 m-0">
-                    <select id="select_language"></select>
+                <div class="col-5 p-0 m-0">
+                    <select id="select_language" disabled></select>
                     <select id="select_dialect"></select>
                 </div>
+                <div class="col-4 p-0 m-0">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="checkKeepRecognition" checked>
+                    <label class="form-check-label" for="checkKeepRecognition">Keep recognition mode</label>
+                  </div>
+              </div>
               </div>
               <div id="info"></div>
               <div class="float-right">
@@ -75,7 +112,7 @@
                   <div id="finishedtime" class="time-stamp"></div>
                 </div>
                 <div class="col-2 p-0 m-0">
-                  <div id="words2" class="countedwords"></div>
+                  <div id="countedwords2" class="countedwords"></div>
                 </div>
               </div>
               <div class="row col-12 p-0 m-0">
@@ -85,9 +122,9 @@
                   </div>
                 </div>
               </div>
-              <div id="outputdiv1"></div>
+              <div id="output_title"></div>
               <div id="compareresults">
-                <span id="output_span" class="final"></span>
+                <span id="output_result" class="final"></span>
                 <p>
               </div>
               <div class="container">
@@ -96,7 +133,7 @@
                     <canvas id="canvas" height="250" width="250"></canvas>
                   </div>
                   <div class="col-9">
-                    <div id="outputdiv2"></div>
+                    <div id="output_legend"></div>
                   </div>
                 </div>
               </div>

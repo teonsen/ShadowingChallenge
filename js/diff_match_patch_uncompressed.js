@@ -1257,6 +1257,8 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
   var ins = 0;
   var del = 0;
   var eql = 0;
+  var html2 = []; // html without DIFF_DELETE
+
   for (var x = 0; x < diffs.length; x++) {
     var op = diffs[x][0];    // Operation (insert, delete, equal)
     var data = diffs[x][1];  // Text of change.
@@ -1266,6 +1268,7 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
       case DIFF_INSERT:
         if (text == '<br>') continue;
         html[x] = '<ins style="background:#ccf7ff;">' + text + '</ins>'; // org color=#e6ffe6 ccf7ff
+        html2[x] = '<del style="background:#ffb3bf;">' + text + '</del>';
         ins += countWords(text);
         break;
       case DIFF_DELETE:
@@ -1274,11 +1277,12 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
         break;
       case DIFF_EQUAL:
         html[x] = '<span>' + text + '</span>';
+        html2[x] = html[x];
         eql += countWords(text);
         break;
     }
   }
-  return [html.join(''), ins, del, eql];
+  return [html.join(''), ins, del, eql, html2.join('')];
 };
 
 function countWords(s){

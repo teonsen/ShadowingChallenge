@@ -82,8 +82,9 @@ $( document ).ready(function() {
   select_language.selectedIndex = 6;
   updateCountry();
   select_dialect.selectedIndex = 6;
-  words1.innerHTML = getWordsStr('');
-  words2.innerHTML = getWordsStr('');
+  countedwords1.innerHTML = getWordsStr('');
+  countedwords2.innerHTML = getWordsStr('');
+  span_result_tab.innerHTML = 'Not compared yet.';
   if (!('webkitSpeechRecognition' in window)) {
     upgrade();
   } else {
@@ -93,7 +94,7 @@ $( document ).ready(function() {
 });
 
 function inputChange(){
-  words1.innerHTML = getWordsStr(textInput.value);
+  countedwords1.innerHTML = getWordsStr(textInput.value);
 }
 
 // 音声認識
@@ -145,8 +146,9 @@ function vr_function() {
       }
       ignore_onend = true;
     }
-    //if (flag_speech == 0)
-    //  vr_function();
+    if (flag_speech == 0 && keepRecognizing) {
+      vr_function();
+    }
   };
 
   recognition.onsoundend = function() {
@@ -180,7 +182,7 @@ function vr_function() {
     final_span.innerHTML = linebreak(final_transcript);
     interim_span.innerHTML = linebreak(temp_transcript);
     working_transcript = final_transcript + temp_transcript;
-    words2.innerHTML = getWordsStr(working_transcript);
+    countedwords2.innerHTML = getWordsStr(working_transcript);
 
     // calc wpm
     let time_elapsed, wpm;
@@ -305,11 +307,11 @@ function resetRecognizedData() {
   interim_span.innerHTML = '';
   startedtime.innerHTML = '';
   finishedtime.innerHTML = '';
-  words2.innerHTML = getWordsStr('');
-  outputdiv1.innerHTML = '';
-  outputdiv2.innerHTML = '';
+  countedwords2.innerHTML = getWordsStr('');
+  output_title.innerHTML = '';
+  output_result.innerHTML = '';
+  output_legend.innerHTML = '';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  output_span.innerHTML = '';
 }
 
 function startRecognition() {
@@ -328,6 +330,13 @@ function startRecognition() {
 $("#select_language").change(function () {
   updateCountry();
 });
+
+var keepRecognizing = false;
+$("#checkKeepRecognition").change(function() {
+  $('input:checked').each(function() {
+    keepRecognizing = $(this).prop('checked');  
+  })
+})
 
 function showInfo(s) {
   current_status = s;
@@ -385,11 +394,11 @@ function stopRecognition() {
 function showDiff() {
   let text1 = textInput.value;
   if (!text1) {
-    document.getElementById('output_span').innerHTML = '比較対象文字列が入力されていません。<br>There is no text to compare with.';
+    document.getElementById('output_result').innerHTML = '比較対象文字列が入力されていません。<br>There is no text to compare with.';
     return;
   }
   if (!working_transcript) {
-    document.getElementById('output_span').innerHTML = '音声認識された文字列がありません。<br>No text is recognized.';
+    document.getElementById('output_result').innerHTML = '音声認識された文字列がありません。<br>No text is recognized.';
     return;
   }
   text1 = getComparableText(text1);
@@ -400,9 +409,9 @@ function showDiff() {
 
   var d = dmp.diff_main(text2, text1);
   dmp.diff_cleanupSemantic(d);
-  let phtml, ins, del, eql;
+  let phtml, ins, del, eql, phtml2;
   //var ds = dmp.diff_prettyHtml(d);
-  [phtml, ins, del, eql] = dmp.diff_prettyHtml(d);
+  [phtml, ins, del, eql, phtml2] = dmp.diff_prettyHtml(d);
 
   let time_elapsed, wpm;
   [time_elapsed, wpm] = getTimeElapsed_WPM();
@@ -416,11 +425,13 @@ function showDiff() {
   let peql = Math.trunc(eql / sum * 100);
   let pins = 100 - peql;
   let outstr1 = `Comparison results (time elapsed=${time_elapsed}, average ${wpm})<br>`;
-  document.getElementById('outputdiv1').innerHTML = outstr1;
-  document.getElementById('output_span').innerHTML = phtml;
+  document.getElementById('output_title').innerHTML = outstr1;
+  document.getElementById('output_result').innerHTML = phtml;
+  document.getElementById('span_result_tab').innerHTML = phtml2;
+
   //let outstr2 = `pronounced correctly: ${eql} (${peql}%)<br>correct script: ${ins} (${pins}%)<br>mispronounced/unrecognized: ${del} (${pdel}%)<br>`;
   let outstr2 = `pronounced/recognized correctly: ${eql} (${peql}%)<br>unread/unrecognized: ${ins} (${pins}%)<br>`;
-  document.getElementById('outputdiv2').innerHTML = outstr2;
+  document.getElementById('output_legend').innerHTML = outstr2;
 
   // https://stackoverflow.com/questions/20966817/how-to-add-text-inside-the-doughnut-chart-using-chart-js
   /*
