@@ -1268,7 +1268,7 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
       case DIFF_INSERT:
         if (text == '<br>') continue;
         html[x] = '<ins style="background:#ccf7ff;">' + text + '</ins>'; // org color=#e6ffe6 ccf7ff
-        html2[x] = '<del style="background:#ffb3bf;">' + text + '</del>';
+        html2[x] = '<ins style="background:#ccf7ff;">' + text + '</ins>';
         ins += countWords(text);
         break;
       case DIFF_DELETE:

@@ -85,7 +85,7 @@ $( document ).ready(function() {
   select_dialect.selectedIndex = 6;
   countedwords1.innerHTML = getWordsStr('');
   countedwords2.innerHTML = getWordsStr('');
-  span_result_tab.innerHTML = 'Not compared yet.';
+  span_result_tab.innerHTML = '[Compare]後、Transcriptionのうち正しく読まれなかった部分がハイライト表示されます。<br>ハイライト部分に注意しながら、再度[Start]ボタンを押してチャレンジしましょう。';
   if (!('webkitSpeechRecognition' in window)) {
     upgrade();
   } else {

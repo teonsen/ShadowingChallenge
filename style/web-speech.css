@@ -47,7 +47,7 @@
 }
 
 .btn-primary {
-  width: 150px;
+  width: 100px;
   margin: auto;
 }
 
@@ -80,7 +80,12 @@ select {
 #output_title {
   color: gray;
 }
-#output_result {
+
+#span_result_tab {
+  color: gray;
+}
+
+#output_legend {
   color: gray;
 }
 
