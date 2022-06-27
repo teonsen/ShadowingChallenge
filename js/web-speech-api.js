@@ -74,7 +74,7 @@ var textInput = document.getElementById('textarea1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 textInput.oninput = inputChange;
-var keepRecognizing = true;
+var persistRecognition = true;
 
 $( document ).ready(function() {
   for (var i = 0; i < langs.length; i++) {
@@ -147,16 +147,16 @@ function vr_function() {
       }
       ignore_onend = true;
     }
-    if (flag_speech == 0 && keepRecognizing) {
-      vr_function();
-    }
+    //if (flag_speech == 0 && persistRecognition) {
+    //  vr_function();
+    //}
   };
 
   recognition.onsoundend = function() {
     // 停止時 (2分くらい無音だと発生)
     showInfo('stop');
     start_img.src = 'images/mic.gif';
-    if (flag_speech == 0 && keepRecognizing) {
+    if (persistRecognition) {
       vr_function();
     }
   };
@@ -338,7 +338,7 @@ $("#select_language").change(function () {
 
 $("#checkKeepRecognition").change(function() {
   $('input:checked').each(function() {
-    keepRecognizing = $(this).prop('checked');  
+    persistRecognition = $(this).prop('checked');  
   })
 })
 
