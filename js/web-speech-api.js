@@ -23,7 +23,7 @@ SOFTWARE.
 */
 var messages = {
   "start": {
-    msg: 'Click "Start shadowing" button or the microphone icon and begin speaking.',
+    msg: 'Click "Start" button or the microphone icon and begin speaking.',
     class: 'alert-success'},
   "speak_now": {
     msg: 'Speak now.',
@@ -74,7 +74,7 @@ var textInput = document.getElementById('textarea1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 textInput.oninput = inputChange;
-var persistRecognition = true;
+//var persistRecognition = true;
 
 $( document ).ready(function() {
   for (var i = 0; i < langs.length; i++) {
@@ -85,7 +85,7 @@ $( document ).ready(function() {
   select_dialect.selectedIndex = 6;
   countedwords1.innerHTML = getWordsStr('');
   countedwords2.innerHTML = getWordsStr('');
-  span_result_tab.innerHTML = '[Compare]後、Transcriptionのうち正しく読まれなかった部分がハイライト表示されます。<br>ハイライト部分に注意しながら、再度[Start]ボタンを押してチャレンジしましょう。';
+  span_result_tab.innerHTML = '[Compare]後、Transcriptionのうち正しく読まれなかった部分がハイライト表示されます。<br>ハイライト部分に注意しながら、再度[Start]ボタンを押してチャレンジしてみましょう。';
   if (!('webkitSpeechRecognition' in window)) {
     upgrade();
   } else {
@@ -147,18 +147,13 @@ function vr_function() {
       }
       ignore_onend = true;
     }
-    //if (flag_speech == 0 && persistRecognition) {
-    //  vr_function();
-    //}
   };
 
   recognition.onsoundend = function() {
     // 停止時 (2分くらい無音だと発生)
     showInfo('stop');
-    start_img.src = 'images/mic.gif';
-    if (persistRecognition) {
-      vr_function();
-    }
+    // Auto restrat
+    vr_function();
   };
 
   recognition.onresult = function(event) {
@@ -265,9 +260,15 @@ $("#start_rec").click(function () {
   }
 });
 
+$("#stop_recog").click(function () {
+  if (recognizing) {
+    recognition.stop();
+    stopRecognition();
+  }
+});
+
 $("#mic_icon").click(function () {
   if (recognizing) {
-    //stopRecognition();
     recognizing = false;
     start_img.src = 'images/mic.gif';
     showInfo('st_pausing');
@@ -336,11 +337,13 @@ $("#select_language").change(function () {
   updateCountry();
 });
 
+/*
 $("#checkKeepRecognition").change(function() {
   $('input:checked').each(function() {
     persistRecognition = $(this).prop('checked');  
   })
 })
+*/
 
 function showInfo(s) {
   current_status = s;
@@ -470,7 +473,6 @@ function showDiff() {
 
 $("#compute_diff").click(function () {
   if (recognizing) {
-    recognizing = false;
     recognition.stop();
     stopRecognition();
   }
