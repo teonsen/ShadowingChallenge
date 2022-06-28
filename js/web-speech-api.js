@@ -74,7 +74,7 @@ var textInput = document.getElementById('textarea1');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 textInput.oninput = inputChange;
-//var persistRecognition = true;
+var userStopped = false;
 
 $( document ).ready(function() {
   for (var i = 0; i < langs.length; i++) {
@@ -152,6 +152,9 @@ function vr_function() {
   recognition.onsoundend = function() {
     // 停止時 (2分くらい無音だと発生)
     showInfo('stop');
+    if (userStopped) {
+      return;
+    }
     // Auto restrat
     vr_function();
   };
@@ -262,6 +265,7 @@ $("#start_rec").click(function () {
 
 $("#stop_recog").click(function () {
   if (recognizing) {
+    userStopped = true;
     recognition.stop();
     stopRecognition();
   }
@@ -393,6 +397,9 @@ function stopRecognition() {
   }
   showInfo('stop');
   finishedtime.innerHTML = 'stopped : ' + getTimestampStr(new Date());
+  if (userStopped) {
+    return;
+  }
   if (textInput.value) {
     showDiff();
   }
